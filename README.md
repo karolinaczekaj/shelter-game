@@ -22,24 +22,24 @@ Ataki i inne kryzysy rozgrywamy na razie jako wydarzenia z wyborem. Wynik zależ
 
 ## 3. Co chcemy mieć na pewno
 
-dni w turach z przyciskiem „Następny dzień”
-budowanie pomieszczeń i kilka działów
-zasoby: energia, jedzenie, woda, pieniądze i morale
-przydzielanie mieszkańców do działów
-ulepszanie pomieszczeń za pieniądze
-2-3 inne schrony widmo, z którymi mamy relacje, i wydarzenia z nimi
-5 dni katastrofy na koniec, z wygraną albo przegraną
+- dni w turach z przyciskiem „Następny dzień”
+- budowanie pomieszczeń i kilka działów
+- zasoby: energia, jedzenie, woda, pieniądze i morale
+- przydzielanie mieszkańców do działów
+- ulepszanie pomieszczeń za pieniądze
+- 2-3 inne schrony widmo, z którymi mamy relacje, i wydarzenia z nimi
+- 5 dni katastrofy na koniec, z wygraną albo przegraną
+- zapis gry
 
 ## 4. Co dodamy, jeśli zdążymy
 
-cechy charakteru i relacje między mieszkańcami
-wpływ sąsiednich pomieszczeń na siebie (np. generator obok sypialni psuje morale bo ludzie wkurzeni)
-ekran ze statystykami innych schronów i tym, z kim się lubimy
-różne rodzaje katastrof zapowiadane wcześniej, żeby można było się pod nie przygotować
-walki w pomieszczeniach
-kilka zakończeń
-zapis gry
-własne grafiki i dźwięki
+- cechy charakteru i relacje między mieszkańcami
+- wpływ sąsiednich pomieszczeń na siebie (np. generator obok sypialni psuje morale bo ludzie wkurzeni)
+- ekran ze statystykami innych schronów i tym, z kim się lubimy
+- różne rodzaje katastrof zapowiadane wcześniej, żeby można było się pod nie przygotować
+- walki w pomieszczeniach
+- kilka zakończeń
+- własne grafiki i dźwięki
 
 ## 5. Technologia
 
