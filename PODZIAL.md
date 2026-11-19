@@ -119,6 +119,30 @@ Dzięki temu nasze części nie muszą o sobie wiedzieć, np. UI słucha zmian z
 
 **Komunikaty dla gracza** (brak zasobów, pełny pokój itp.) wysyłamy przez `GameEvents.Notify("tekst")`, a UI pokazuje je w jednym miejscu.
 
+## Menedżery w `Core/Managers`
+
+Oba siedzą na obiekcie `GameManager` w scenie i są dostępne z każdego skryptu przez `.Instance`.
+
+**ResourceManager**: stan zasobów schronu. Zasoby startowe ustawia się w Inspectorze.
+
+- `Get(typ)`: ile mamy danego zasobu
+- `Add(typ, ilość)`: dodaje, albo odejmuje przy ujemnej wartości; nie schodzi poniżej 0
+- `TrySpend(typ, koszt)`: płaci, jeśli stać, i zwraca true albo false
+- `CanAfford(listaKosztów)`: czy stać nas na cały koszt, np. przy budowie
+- `TrySpend(listaKosztów)`: płaci cały koszt albo nic
+- `UpdateShelterMorale(listaMieszkańców)`: liczy morale schronu jako średnią, raz dziennie
+
+Przykład: `ResourceManager.Instance.Add(ResourceType.Food, -2);`
+
+**DayManager**: system tur. Liczbę dni przygotowań i katastrofy ustawia się w Inspectorze.
+
+- `NextDay()`: przechodzi do następnego dnia, pod przycisk „Następny dzień”
+- `EndGame(czyWygrana)`: kończy grę, np. `EndGame(false)`, gdy zginą wszyscy mieszkańcy
+- `CurrentDay`: numer dnia
+- `IsDisasterPhase`: czy trwa już katastrofa
+
+Do testów bez UI: w Play kliknij prawym na komponencie `DayManager` w Inspectorze → **Next Day**.
+
 ## Jak pracujemy
 
 - Kod i nazwy w kodzie po angielsku, commity mogą być po polsku.

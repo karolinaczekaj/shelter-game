@@ -1,0 +1,34 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5c9cae1b3fcfade46b1f4616ff9fb11d, type: 3}
+  m_Name: Room_Quarters
+  m_EditorClassIdentifier: Assembly-CSharp::Schron.Core.RoomDataSO
+  roomId: quarters
+  roomName: Kwatery
+  roomType: 0
+  roomIcon: {fileID: 0}
+  roomPrefab: {fileID: 0}
+  size: {x: 2, y: 1}
+  buildCost:
+  - type: 3
+    amount: 10
+  upgradeCost:
+  - type: 5
+    amount: 10
+  maxLevel: 3
+  producesResources: 0
+  producedResource: 0
+  baseProductionPerWorker: 1
+  requiredStat: 0
+  maxWorkers: 4
+  energyUpkeepPerDay: 1
+  inputPerDay: []
