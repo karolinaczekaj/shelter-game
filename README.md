@@ -43,4 +43,4 @@ Ataki i inne kryzysy rozgrywamy na razie jako wydarzenia z wyborem. Wynik zależ
 
 ## 5. Technologia
 
-Unity 6.3 LTS (6000.3.27f2), 2D, C#, kod piszemy w VS Code. Pracujemy na GitHubie na osobnych branchach i łączymy zmiany przez pull requesty, a zadania trzymamy w GitHub Projects.
+Unity 6.3 LTS (6000.3.28f1), 2D, C#, kod piszemy w VS Code. Pracujemy na GitHubie na osobnych branchach i łączymy zmiany przez pull requesty, a zadania trzymamy w GitHub Projects.
