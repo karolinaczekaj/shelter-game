@@ -1,27 +1,136 @@
-# Podział pracy
+# Podział pracy i ustalenia
 
-Każdy ma swój obszar i swój folder w Assets/Schron/Systems. Wspólne rzeczy (enumy, kontrakty, eventy) są w Core i zmieniamy je tylko po ustaleniu z resztą.
+Każdy ma swój obszar i swój folder w `Assets/Schron/Systems`. Wspólne rzeczy (enumy, kontrakty, eventy) są w `Core` i zmieniamy je tylko po ustaleniu z resztą.
 
-## Ekonomia i budowanie: Karolina
+## Kto co robi
 
-Folder: Systems/Buildings&Economy
+### Karolina: ekonomia i budowanie (DEV_1)
+Folder: `Systems/Buildings&Economy`, scena testowa: `TEST/DEV_1_TEST`
 
-Siatka schronu, budowanie i ulepszanie pomieszczeń, produkcja i zużycie zasobów, pieniądze, skutki katastrofy dla bazy, balans liczb.
+Siatka schronu, budowanie i ulepszanie pomieszczeń, klasa `Room`, produkcja i zużycie zasobów, `ResourceManager` i `DayManager`, skutki katastrofy dla bazy, balans liczb.
 
-## Mieszkańcy: Bartek
-
-Folder: Systems/ResidentsAI
+### Bartek: mieszkańcy (DEV_2)
+Folder: `Systems/ResidentsAI`, scena testowa: `TEST/DEV_2_TEST`
 
 Dane i statystyki mieszkańców, ich stany, przydzielanie do pomieszczeń, poruszanie się i animacje, ekspedycje.
 
-## UI i fabuła: Norbert
-
-Folder: Systems/UI&Events
+### Norbert: UI i fabuła (DEV_3)
+Folder: `Systems/UI&Events`, scena testowa: `TEST/DEV_3_TEST`
 
 Interfejs gry, wydarzenia z wyborami, inne schrony i relacje z nimi, przebieg katastrofy, zakończenia.
 
+## Przebieg gry
+
+- **Faza przygotowań:** dni 1–60. Budujemy, ulepszamy, zbieramy zapasy, dogadujemy się (albo nie) z innymi schronami.
+- **Faza katastrofy:** dni 61–65. Katastrofa uderza w schron, budowanie jest ograniczone, liczą się zapasy i decyzje.
+- **Wygrana:** schron przetrwał 5 dni katastrofy i żyje w nim co najmniej jeden mieszkaniec. Im więcej ludzi i lepszy stan schronu, tym lepsze zakończenie.
+- **Przegrana:** wszyscy mieszkańcy zginęli albo morale schronu spadło do zera (bunt). Może się to stać w każdej fazie.
+
+Liczby (60 dni, 5 dni) ustawia się w `DayManager`, więc można je łatwo zmienić przy testach.
+
+## Przebieg jednego dnia
+
+Gracz robi w danym dniu, co chce, i klika „Następny dzień”. Wtedy po kolei:
+
+1. `ShelterActions.DayEnded(dzień)`, czyli rozliczenie mijającego dnia:
+   - pokoje z prądem produkują zasoby (warsztat najpierw zużywa złom i rudę),
+   - pokoje zużywają energię,
+   - mieszkańcy jedzą i piją, a przy braku jedzenia lub wody tracą zdrowie,
+   - przeliczane jest morale schronu.
+2. Licznik dni rośnie o jeden.
+3. Jeśli zaczyna się dzień 61: `GameEvents.DisasterStarted()`.
+4. `ShelterActions.DayStarted(dzień)`, czyli nowy dzień: może pojawić się wydarzenie, a UI się odświeża.
+5. Sprawdzenie wygranej i przegranej, ewentualnie `GameEvents.GameOver(true/false)`.
+
+## Zasoby
+
+Jedzenie, woda, energia, złom, ruda, komponenty i morale. Pieniędzy w grze nie ma.
+
+- Kopalnia daje rudę, a czasem trochę złomu.
+- Złom w większych ilościach przynoszą wyprawy (jak już będą).
+- Warsztat przerabia złom i rudę na komponenty.
+- Budowa i ulepszenia kosztują komponenty, tańsze rzeczy sam złom.
+- Z innymi schronami handlujemy wymianą: złom, komponenty, jedzenie, woda.
+
+**Morale schronu** to średnia morale wszystkich mieszkańców. Liczy się samo i pokazuje na pasku zasobów, nikt go ręcznie nie dodaje ani nie odejmuje. Zmieniamy morale konkretnych mieszkańców.
+
+**Brak energii:** pokoje bez prądu przestają produkować.
+
+## Start gry
+
+Gracz zaczyna z:
+- postawionym generatorem i kwaterami,
+- kilkoma mieszkańcami,
+- zapasem jedzenia i wody na kilka dni,
+- 30 złomu i 20 komponentów, żeby było z czego zacząć budować.
+
+Liczby są do przetestowania i zmiany przy balansowaniu.
+
+## Pomieszczenia
+
+| Pokój | Co robi | Statystyka |
+|---|---|---|
+| Kwatery | mieszkańcy śpią, zwiększa limit ludzi, odpoczynek poprawia morale | – |
+| Farma | jedzenie | zręczność |
+| Uzdatnianie wody | woda | inteligencja |
+| Generator | energia | siła |
+| Kopalnia | ruda, czasem złom | siła |
+| Warsztat | złom + ruda → komponenty | inteligencja |
+| Lecznica | leczy rannych i chorych | inteligencja |
+
+Najpierw robimy pierwsze sześć, bo bez nich gra się nie kręci. Lecznica jest następna. Jeśli zostanie czas: magazyn, ochrona i radiostacja (kontakt i handel z innymi schronami).
+
+## Mieszkańcy
+
+Statystyki: siła, inteligencja, zręczność (1–10). Każdy pokój ma swoją statystykę, która zwiększa jego produkcję.
+
+**Przydział do pokoju zmieniamy tylko przez `room.TryAssign()` i `room.Remove()`.** Te metody aktualizują jednocześnie listę pracowników w pokoju i pozycję pokoju zapisaną w mieszkańcu, żeby nic się nie rozjechało.
+
+## Siatka i grafika
+
+- Pixels Per Unit: 32
+- 1 kratka = 3 × 2 jednostki (96 × 64 px)
+- postać mniej więcej 1 × 1.5 jednostki (32 × 48 px)
+- pokoje mają 1–3 kratki szerokości i zawsze 1 piętro wysokości
+- siatka na start: 8 kratek szerokości, 6 pięter w dół
+- winda to stała kolumna łącząca piętra; w jej kolumnie nie da się budować, a pokój nie może jej przecinać
+
+## Wspólny kod w `Core/Contracts/Scripts`
+
+Wszystko jest w namespace `Schron.Core`, więc w swoich skryptach dopisujecie na górze `using Schron.Core;`.
+
+| Plik | Co to jest |
+|---|---|
+| `Enum.cs` | listy wartości: zasoby (`ResourceType`), typy pokoi (`RoomType`), statystyki (`StatType`), stany mieszkańca (`ResidentState`) |
+| `RoomDataSO.cs` | dane typu pokoju (koszt, produkcja, liczba miejsc, wymagana statystyka). Pliki tworzymy w Unity przez Create → Schron → Room Data i trzymamy w `Data/Rooms` |
+| `Room.cs` | konkretny pokój postawiony w schronie. Metody: `TryAssign(resident)`, `Remove(resident)`, `TryUpgrade()` |
+| `ResidentData.cs` | dane mieszkańca: imię, zdrowie, morale, statystyki, stan, pozycja przydzielonego pokoju. Metoda `GetStat(StatType)` |
+| `ShelterActions.cs` | eventy symulacji: dni, zasoby, budowa i ulepszanie pokoi, przydział i stan mieszkańców |
+| `GameEvents.cs` | eventy fabularne: wyprawy, katastrofa, koniec gry, komunikaty dla gracza (`Notify`) |
+
+**Jak używać eventów:** kto coś zmienia, ten ogłasza, np. po postawieniu pokoju `ShelterActions.RoomBuilt(data, pozycja)`. Kto chce zareagować, podpina się w `OnEnable` i odpina w `OnDisable`:
+
+```csharp
+void OnEnable()  { ShelterActions.OnRoomBuilt += HandleRoomBuilt; }
+void OnDisable() { ShelterActions.OnRoomBuilt -= HandleRoomBuilt; }
+```
+
+Dzięki temu nasze części nie muszą o sobie wiedzieć, np. UI słucha zmian zasobów i samo odświeża pasek.
+
+**Komunikaty dla gracza** (brak zasobów, pełny pokój itp.) wysyłamy przez `GameEvents.Notify("tekst")`, a UI pokazuje je w jednym miejscu.
+
 ## Jak pracujemy
+
+- Kod i nazwy w kodzie po angielsku, commity mogą być po polsku.
 - Każdy na swoim branchu, zmiany łączymy przez pull requesty, a PR zatwierdza ktoś inny.
-- Testujemy na swoich scenach w TEST/DEV_X_TEST. Główną scenę edytuje jedna osoba naraz, po wcześniejszym uprzedzeniu na czacie.
-- Nowe wartości w enumach dopisujemy tylko na końcu listy.
-- Zadania i ich status trzymamy na boardzie.
+- Branche nazywamy od zadania, np. `siatka-schronu`, `pasek-zasobow`.
+- Przed pracą zawsze `git checkout main` i `git pull`.
+- W opisie pull requesta piszemy `Closes #numer` zadania, wtedy karta na boardzie sama przechodzi do Done.
+- Testujemy na swoich scenach. Główną scenę `Main` edytuje jedna osoba naraz, po wcześniejszym uprzedzeniu na czacie.
+- Pliki w `Core` zmieniamy tylko po ustaleniu we trójkę. Nowe wartości w enumach dopisujemy tylko na końcu listy.
+- Zadania i ich status trzymamy na boardzie. Zaczynając zadanie, przesuwamy kartę do In Progress.
+- Grafiki i dźwięki z darmowych paczek zapisujemy w osobnym pliku `CREDITS.md`: skąd są i na jakiej licencji.
+
+## Wersja Unity
+
+Wszyscy używamy **Unity 6.3 LTS (6000.3.28f1)**. Bez zmiany wersji bez ustalenia z resztą.
