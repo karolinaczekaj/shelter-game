@@ -3,9 +3,6 @@ using UnityEngine;
 
 namespace Schron.Core
 {
-    // Konkretny pokój postawiony na mapie.
-    // KONTRAKT: nazw i parametrów metod nie zmieniamy bez ustalenia z resztą.
-    // Środek metod uzupełnia osoba od ekonomii i budowania.
     public class Room : MonoBehaviour
     {
         public RoomDataSO Data;
@@ -15,24 +12,73 @@ namespace Schron.Core
 
         public bool IsFull => Data != null && Workers.Count >= Data.maxWorkers;
 
-        // Dodaje mieszkańca do pokoju. Zwraca false, jeśli nie ma miejsca.
+        // wszystkie pokoje w schronie, zeby dalo sie znalezc pokoj po pozycji
+        public static List<Room> AllRooms = new List<Room>();
+
+        private void OnEnable()  => AllRooms.Add(this);
+        private void OnDisable() => AllRooms.Remove(this);
+
+        public static Room GetRoomAt(Vector2Int pos)
+        {
+            return AllRooms.Find(r => r.GridPosition == pos);
+        }
+
         public bool TryAssign(ResidentData resident)
         {
-            // TODO
-            return false;
+            if (resident == null)
+                return false;
+
+            if (Workers.Contains(resident))
+                return true;
+
+            if (IsFull)
+            {
+                GameEvents.Notify("Pokoj jest pelny");
+                return false;
+            }
+
+            // jak pracuje gdzies indziej, to najpierw go stamtad wypisujemy
+            Room oldRoom = GetRoomAt(resident.assignedRoomGridPos);
+            if (oldRoom != null)
+                oldRoom.Remove(resident);
+
+            Workers.Add(resident);
+            resident.assignedRoomGridPos = GridPosition;
+            resident.currentState = ResidentState.Working;
+
+            ShelterActions.ResidentAssigned(resident, GridPosition);
+            ShelterActions.ResidentStateChanged(resident, ResidentState.Working);
+            return true;
         }
 
-        // Wypisuje mieszkańca z pokoju.
         public void Remove(ResidentData resident)
         {
-            // TODO
+            if (!Workers.Remove(resident))
+                return;
+
+            resident.assignedRoomGridPos = new Vector2Int(-1, -1);
+            resident.currentState = ResidentState.Idle;
+
+            ShelterActions.ResidentStateChanged(resident, ResidentState.Idle);
         }
 
-        // Ulepsza pokój o jeden poziom. Zwraca false, jeśli brakuje zasobów lub to max poziom.
         public bool TryUpgrade()
         {
-            // TODO
-            return false;
+            if (Level >= Data.maxLevel)
+            {
+                GameEvents.Notify("Maksymalny poziom");
+                return false;
+            }
+
+            if (!ResourceManager.Instance.TrySpend(Data.upgradeCost))
+            {
+                GameEvents.Notify("Brakuje zasobow na ulepszenie");
+                return false;
+            }
+
+            Level++;
+            ShelterActions.RoomUpgraded(GridPosition, Level);
+            return true;
         }
     }
 }
