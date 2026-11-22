@@ -267,6 +267,7 @@ GameObject:
   - component: {fileID: 1012670662}
   - component: {fileID: 1012670661}
   - component: {fileID: 1012670660}
+  - component: {fileID: 1012670663}
   m_Layer: 0
   m_Name: GameManager
   m_TagString: Untagged
@@ -295,6 +296,8 @@ MonoBehaviour:
     amount: 20
   - type: 0
     amount: 20
+  - type: 2
+    amount: 10
 --- !u!114 &1012670661
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -324,6 +327,19 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1012670663
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1012670659}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1c5ae621c14e47b49b0cf5e787c37393, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::TestWorkers
+  workersPerRoom: 2
 --- !u!1 &1475619274
 GameObject:
   m_ObjectHideFlags: 0
@@ -335,6 +351,7 @@ GameObject:
   - component: {fileID: 1475619277}
   - component: {fileID: 1475619276}
   - component: {fileID: 1475619275}
+  - component: {fileID: 1475619278}
   m_Layer: 0
   m_Name: Shelter
   m_TagString: Untagged
@@ -397,6 +414,21 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1475619278
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1475619274}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3ffe3bae05c37cf48b523a97a4fbe6f0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Schron.Building.ProductionManager
+  mineScrapChance: 0.3
+  mineScrapPerWorker: 1
+  logSummary: 1
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0
