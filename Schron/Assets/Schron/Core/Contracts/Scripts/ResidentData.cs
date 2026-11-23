@@ -34,5 +34,10 @@ namespace Schron.Core
                 default: return 0;
             }
         }
+
+        public ResidentData Clone()
+        {
+            return (ResidentData)MemberwiseClone();
+        }
     }
 }
