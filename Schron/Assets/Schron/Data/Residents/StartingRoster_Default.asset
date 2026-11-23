@@ -1,0 +1,85 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5fc8d719ed2851a48a616067c6fc4f30, type: 3}
+  m_Name: StartingRoster_Default
+  m_EditorClassIdentifier: Assembly-CSharp::Schron.Residents.StartingRosterSO
+  residents:
+  - data:
+      id: res_ana
+      residentName: Ana
+      residentIcon: {fileID: 0}
+      residentPrefab: {fileID: 6590839446556765975, guid: 0d15c0a1676da3b47a26709e7f6bd4c3, type: 3}
+      health: 100
+      morale: 50
+      strength: 0
+      intelligence: 0
+      agility: 0
+      currentState: 0
+      assignedRoomGridPos: {x: -1, y: -1}
+    assignToRoom: 0
+    roomGridPos: {x: 0, y: 0}
+  - data:
+      id: res__tom
+      residentName: Tom
+      residentIcon: {fileID: 0}
+      residentPrefab: {fileID: 6590839446556765975, guid: 0d15c0a1676da3b47a26709e7f6bd4c3, type: 3}
+      health: 100
+      morale: 50
+      strength: 0
+      intelligence: 0
+      agility: 0
+      currentState: 0
+      assignedRoomGridPos: {x: -1, y: -1}
+    assignToRoom: 0
+    roomGridPos: {x: 0, y: 0}
+  - data:
+      id: res_rick
+      residentName: Rick
+      residentIcon: {fileID: 0}
+      residentPrefab: {fileID: 6590839446556765975, guid: 0d15c0a1676da3b47a26709e7f6bd4c3, type: 3}
+      health: 100
+      morale: 50
+      strength: 0
+      intelligence: 0
+      agility: 0
+      currentState: 0
+      assignedRoomGridPos: {x: -1, y: -1}
+    assignToRoom: 0
+    roomGridPos: {x: 0, y: 0}
+  - data:
+      id: res_meg
+      residentName: Meg
+      residentIcon: {fileID: 0}
+      residentPrefab: {fileID: 6590839446556765975, guid: 0d15c0a1676da3b47a26709e7f6bd4c3, type: 3}
+      health: 100
+      morale: 50
+      strength: 0
+      intelligence: 0
+      agility: 0
+      currentState: 0
+      assignedRoomGridPos: {x: -1, y: -1}
+    assignToRoom: 0
+    roomGridPos: {x: 0, y: 0}
+  - data:
+      id: res_sam
+      residentName: Sam
+      residentIcon: {fileID: 0}
+      residentPrefab: {fileID: 6590839446556765975, guid: 0d15c0a1676da3b47a26709e7f6bd4c3, type: 3}
+      health: 100
+      morale: 50
+      strength: 0
+      intelligence: 0
+      agility: 0
+      currentState: 0
+      assignedRoomGridPos: {x: -1, y: -1}
+    assignToRoom: 0
+    roomGridPos: {x: 0, y: 0}
