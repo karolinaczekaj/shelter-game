@@ -143,6 +143,23 @@ Przykład: `ResourceManager.Instance.Add(ResourceType.Food, -2);`
 
 Do testów bez UI: w Play kliknij prawym na komponencie `DayManager` w Inspectorze → **Next Day**.
 
+## Siatka i budowanie (Systems/Buildings&Economy)
+
+Obiekt `Shelter` w scenie ma `ShelterGrid` i `BuildManager`.
+
+**ShelterGrid**: siatka schronu, pole (0,0) to lewy górny róg, y rośnie w dół.
+- `CanPlace(pole, rozmiar)`: czy pokój się zmieści
+- `GetRoom(pole)`: jaki pokój stoi na danym polu
+- `WorldToCell(pozycja)`: zamienia pozycję w świecie (np. kliknięcie) na pole siatki
+- `AreaCenter(pole, rozmiar)`: środek obszaru w świecie, np. żeby postać wiedziała, gdzie iść
+
+**BuildManager**:
+- `SelectRoom(danePokoju)`: wybiera pokój do budowy, pod przyciski w menu budowania; `SelectRoom(null)` anuluje
+- `TryBuild(danePokoju, pole)`: buduje, jeśli jest miejsce i zasoby
+- pokoje startowe ustawia się w Inspectorze w `Starting Rooms`
+
+Na razie do testów pokój wybiera się klawiszami 1–6, a Esc albo prawy przycisk myszy anuluje.
+
 ## Jak pracujemy
 
 - Kod i nazwy w kodzie po angielsku, commity mogą być po polsku.

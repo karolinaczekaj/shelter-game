@@ -181,7 +181,7 @@ Camera:
   far clip plane: 1000
   field of view: 60
   orthographic: 1
-  orthographic size: 5
+  orthographic size: 7
   m_Depth: -1
   m_CullingMask:
     serializedVersion: 2
@@ -324,9 +324,83 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &1475619274
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1475619277}
+  - component: {fileID: 1475619276}
+  - component: {fileID: 1475619275}
+  m_Layer: 0
+  m_Name: Shelter
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1475619275
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1475619274}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 981c4a58951cb9c42b067f8e9c3eec56, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Schron.Building.BuildManager
+  buildableRooms:
+  - {fileID: 11400000, guid: a5347762174b2264dad33f9302978a7b, type: 2}
+  - {fileID: 11400000, guid: 26e310ec9f4f22f43afead6ebf08d757, type: 2}
+  - {fileID: 11400000, guid: 8905bb1394dbe5e499fbed4df3c6b5d8, type: 2}
+  - {fileID: 11400000, guid: 80726dc3540a57747a8f69703e5e4a43, type: 2}
+  - {fileID: 11400000, guid: 6e8fdc7a5def3f74a94dbc92ed9b98bc, type: 2}
+  - {fileID: 11400000, guid: 561e0a500e8fea34eb1f1e32f0470307, type: 2}
+  startingRooms:
+  - data: {fileID: 11400000, guid: 80726dc3540a57747a8f69703e5e4a43, type: 2}
+    cell: {x: 1, y: 0}
+  - data: {fileID: 11400000, guid: a5347762174b2264dad33f9302978a7b, type: 2}
+    cell: {x: 3, y: 0}
+--- !u!114 &1475619276
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1475619274}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4ebfb3e2a4e7a514a8b203743e9888af, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Schron.Building.ShelterGrid
+  width: 8
+  height: 6
+  cellSize: {x: 3, y: 2}
+  elevatorColumn: 0
+--- !u!4 &1475619277
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1475619274}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -12, y: 6, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0
   m_Roots:
   - {fileID: 722027194}
   - {fileID: 1012670662}
+  - {fileID: 1475619277}
