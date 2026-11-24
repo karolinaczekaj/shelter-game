@@ -160,6 +160,15 @@ Obiekt `Shelter` w scenie ma `ShelterGrid` i `BuildManager`.
 
 Na razie do testów pokój wybiera się klawiszami 1–6, a Esc albo prawy przycisk myszy anuluje.
 
+
+**ProductionManager** (na obiekcie `Shelter`): rozlicza produkcję na koniec każdego dnia.
+- najpierw produkują generatory, potem każdy pokój płaci za prąd; bez prądu nie produkuje
+- warsztat zużywa złom i rudę (`inputPerDay`), bez materiałów nie robi komponentów
+- produkcja pracownika = `baseProductionPerWorker × (0.5 + statystyka / 10)`, czyli stat 1 daje ×0.6, stat 5 ×1.0, stat 10 ×1.5
+- każdy poziom pokoju powyżej pierwszego daje +50% produkcji
+- kopalnia ma 30% szans na 1 złom od każdego pracownika dziennie
+- po każdym dniu w Console jest podsumowanie zasobów
+
 ## Jak pracujemy
 
 - Kod i nazwy w kodzie po angielsku, commity mogą być po polsku.
