@@ -1,5 +1,6 @@
 using UnityEngine;
 using Schron.Core;
+using Schron.Building;
 
 // tylko do testow, dopoki nie ma mieszkancow Bartka
 public class TestWorkers : MonoBehaviour
@@ -43,4 +44,11 @@ public class TestWorkers : MonoBehaviour
         bool ok = room.TryUpgrade();
         Debug.Log($"{room.Data.roomName}: ulepszenie {(ok ? "udane" : "nieudane")}, poziom {room.Level}");
     }
+
+    [ContextMenu("Pokaz pojemnosc schronu")]
+    private void ShowCapacity()
+    {
+        Debug.Log("Miejsca w kwaterach: " + ShelterCapacity.GetTotalBeds());
+    }
+
 }
