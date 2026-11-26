@@ -157,6 +157,7 @@ Obiekt `Shelter` w scenie ma `ShelterGrid` i `BuildManager`.
 - `SelectRoom(danePokoju)`: wybiera pokój do budowy, pod przyciski w menu budowania; `SelectRoom(null)` anuluje
 - `TryBuild(danePokoju, pole)`: buduje, jeśli jest miejsce i zasoby
 - pokoje startowe ustawia się w Inspectorze w `Starting Rooms`
+- po wybraniu pokoju pod kursorem widać jego zarys: zielony, gdy można budować, czerwony, gdy nie ma miejsca albo zasobów; kliknięcia nad UI nie budują
 
 Na razie do testów pokój wybiera się klawiszami 1–6, a Esc albo prawy przycisk myszy anuluje.
 
