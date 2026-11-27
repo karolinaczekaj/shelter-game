@@ -169,6 +169,14 @@ Na razie do testów pokój wybiera się klawiszami 1–6, a Esc albo prawy przyc
 - kopalnia ma 30% szans na 1 złom od każdego pracownika dziennie
 - po każdym dniu w Console jest podsumowanie zasobów
 
+
+**ShelterCapacity** (`Schron.Building`, bez obiektu w scenie): ile osób może mieszkać w schronie.
+- `ShelterCapacity.GetTotalBeds()`: łączna liczba miejsc we wszystkich kwaterach
+- `ShelterCapacity.HasFreeBed(liczbaMieszkańców)`: czy zmieści się jeszcze ktoś, do sprawdzenia przed przyjęciem nowej osoby
+- kwatery mają 4 miejsca, każdy kolejny poziom dodaje 2 (poziom 2 to 6, poziom 3 to 8)
+
+W swoim skrypcie trzeba dopisać `using Schron.Building;`.
+
 ## Jak pracujemy
 
 - Kod i nazwy w kodzie po angielsku, commity mogą być po polsku.
