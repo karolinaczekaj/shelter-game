@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using Schron.Core;
+using UnityEngine.EventSystems;
 
 namespace Schron.Building
 {
@@ -25,6 +26,7 @@ namespace Schron.Building
 
         private RoomDataSO selectedRoom;
         private Sprite placeholderSprite;
+        private SpriteRenderer preview;
 
         private void Awake()
         {
@@ -35,6 +37,13 @@ namespace Schron.Building
             tex.SetPixel(0, 0, Color.white);
             tex.Apply();
             placeholderSprite = Sprite.Create(tex, new Rect(0, 0, 1, 1), new Vector2(0.5f, 0.5f), 1);
+            // podglad budowy pod kursorem
+            GameObject previewGo = new GameObject("BuildPreview");
+            previewGo.transform.SetParent(transform);
+            preview = previewGo.AddComponent<SpriteRenderer>();
+            preview.sprite = placeholderSprite;
+            preview.sortingOrder = 10;
+            preview.enabled = false; 
         }
 
         // NOWE: stawia pokoje startowe za darmo
@@ -72,12 +81,49 @@ namespace Schron.Building
             if (keyboard.escapeKey.wasPressedThisFrame || mouse.rightButton.wasPressedThisFrame)
                 SelectRoom(null);
 
-            if (selectedRoom != null && mouse.leftButton.wasPressedThisFrame)
+            if (selectedRoom == null || IsPointerOverUI())
             {
-                Vector3 world = Camera.main.ScreenToWorldPoint(mouse.position.ReadValue());
-                Vector2Int cell = ShelterGrid.Instance.WorldToCell(world);
-                TryBuild(selectedRoom, cell);
+                preview.enabled = false;
+                return;
             }
+
+            Vector3 world = Camera.main.ScreenToWorldPoint(mouse.position.ReadValue());
+            Vector2Int cell = ShelterGrid.Instance.WorldToCell(world);
+            UpdatePreview(cell);
+
+            if (mouse.leftButton.wasPressedThisFrame)
+                TryBuild(selectedRoom, cell);
+        }
+
+        private void UpdatePreview(Vector2Int cell)
+        {
+            ShelterGrid grid = ShelterGrid.Instance;
+
+            if (!grid.IsInside(cell))
+            {
+                preview.enabled = false;
+                return;
+            }
+
+            preview.enabled = true;
+            preview.transform.position = grid.AreaCenter(cell, selectedRoom.size);
+            preview.transform.localScale = new Vector3(
+                selectedRoom.size.x * grid.CellSize.x * 0.95f,
+                selectedRoom.size.y * grid.CellSize.y * 0.9f,
+                1);
+
+            bool canBuild = grid.CanPlace(cell, selectedRoom.size)
+                && ResourceManager.Instance.CanAfford(selectedRoom.buildCost);
+
+            preview.color = canBuild
+                ? new Color(0.3f, 1f, 0.3f, 0.5f)   // zielony, polprzezroczysty
+                : new Color(1f, 0.3f, 0.3f, 0.5f);  // czerwony
+        }
+
+        // zeby klik w menu Norberta nie stawial pokoju pod spodem
+        private bool IsPointerOverUI()
+        {
+            return EventSystem.current != null && EventSystem.current.IsPointerOverGameObject();
         }
 
         public Room TryBuild(RoomDataSO data, Vector2Int cell)
