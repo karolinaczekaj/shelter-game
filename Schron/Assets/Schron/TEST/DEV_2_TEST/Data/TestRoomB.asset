@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Schron.Core.RoomDataSO
   roomId: 
   roomName: 
-  roomType: 0
+  roomType: 6
   roomIcon: {fileID: 0}
   roomPrefab: {fileID: 0}
   size: {x: 1, y: 1}
@@ -22,9 +22,9 @@ MonoBehaviour:
   upgradeCost: []
   maxLevel: 3
   producesResources: 0
-  producedResource: 0
+  producedResource: 6
   baseProductionPerWorker: 1
-  requiredStat: 0
-  maxWorkers: 1
+  requiredStat: 1
+  maxWorkers: 2
   energyUpkeepPerDay: 1
   inputPerDay: []

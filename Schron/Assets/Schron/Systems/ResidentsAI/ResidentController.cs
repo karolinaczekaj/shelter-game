@@ -22,5 +22,10 @@ namespace Schron.Core
             int index = Mathf.Max(0, room.Workers.IndexOf(Data));
             transform.position = room.transform.position + new Vector3(index * 0.5f, 0f, 0f);
         }
+
+        public void MoveTo(Vector3 position)
+        {
+            transform.position = position;
+        }
     }
 }

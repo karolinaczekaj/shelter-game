@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using Schron.Core;
+using Schron.Building;
 
 namespace Schron.Residents
 {
@@ -40,11 +41,13 @@ namespace Schron.Residents
                 return;
 
             ShelterActions.OnResidentAssigned += HandleResidentAssigned;
+            ShelterActions.OnResidentStateChanged += HandleResidentStateChanged;
         }
 
         private void OnDisable()
         {
             ShelterActions.OnResidentAssigned -= HandleResidentAssigned;
+            ShelterActions.OnResidentStateChanged -= HandleResidentStateChanged;
         }
 
         // Raised by Room.TryAssign -> ShelterActions.ResidentAssigned
@@ -55,6 +58,40 @@ namespace Schron.Residents
 
             if (controller != null && room != null)
                 controller.MoveToRoom(room);
+        }
+
+        // After Room.Remove() the resident is Idle without a room: send them back to the idle row.
+        private void HandleResidentStateChanged(ResidentData data, ResidentState state)
+        {
+            if (state != ResidentState.Idle || data.assignedRoomGridPos != NoRoom)
+                return;
+
+            ResidentController controller = GetController(data);
+            if (controller != null)
+                controller.MoveTo(GetNextIdlePosition(data));
+        }
+
+
+        // Validates a template, makes a copy and spawns it in the idle row (no room yet).
+        private ResidentController SpawnFromTemplate(ResidentData template)
+        {
+            if (template == null)
+            {
+                Debug.LogWarning("Resident template is missing - skipping.");
+                return null;
+            }
+
+            // A resident must start unassigned. The room is set only by Room.TryAssign().
+            if (template.assignedRoomGridPos != NoRoom)
+            {
+                Debug.LogError(
+                    $"'{template.residentName}': template has assignedRoomGridPos " +
+                    $"{template.assignedRoomGridPos}. Set it to (-1,-1). Skipping this resident.");
+                return null;
+            }
+
+            ResidentData data = template.Clone();
+            return Spawn(data, GetNextIdlePosition(), residentsParent);
         }
 
         // Spawns the starting residents. Call once at the start of a NEW game,
@@ -71,25 +108,13 @@ namespace Schron.Residents
 
             foreach (StartingResident entry in roster.residents)
             {
-                if (entry == null || entry.data == null)
+                if (entry == null)
                 {
                     Debug.LogWarning("Empty entry in StartingRoster - skipping.");
                     continue;
                 }
 
-                // A resident must start unassigned. The room is set only by Room.TryAssign().
-                if (entry.data.assignedRoomGridPos != NoRoom)
-                {
-                    Debug.LogError(
-                        $"'{entry.data.residentName}': template has assignedRoomGridPos " +
-                        $"{entry.data.assignedRoomGridPos}. Set it to (-1,-1) and choose the room " +
-                        "in 'Room Grid Pos'. Skipping this resident.");
-                    continue;
-                }
-
-                ResidentData data = entry.data.Clone();
-
-                ResidentController controller = Spawn(data, GetNextIdlePosition(), residentsParent);
+                ResidentController controller = SpawnFromTemplate(entry.data);
                 if (controller == null)
                     continue;
 
@@ -100,12 +125,34 @@ namespace Schron.Residents
 
                 Room room = Room.GetRoomAt(entry.roomGridPos);
                 if (room == null)
-                    Debug.LogWarning($"Room {entry.roomGridPos} not found for '{data.residentName}'.");
+                    Debug.LogWarning($"Room {entry.roomGridPos} not found for '{controller.Data.residentName}'.");
                 else
-                    room.TryAssign(data); // on failure the resident stays Idle, state stays consistent
+                    room.TryAssign(controller.Data); // state comes from the room type; on failure the resident stays Idle
             }
 
+            // Balance check only: the starting roster is not blocked by beds.
+            int beds = ShelterCapacity.GetTotalBeds();
+            if (beds > 0 && _residents.Count > beds)
+                Debug.LogWarning($"Starting roster has {_residents.Count} residents, but there are only {beds} beds.");
+
             return spawned;
+        }
+
+        public bool HasFreeBed()
+        {
+            return ShelterCapacity.HasFreeBed(_residents.Count);
+        }
+
+        // Admits a new resident (recruitment, story event...). Checks the beds first.
+        public ResidentController TryAddResident(ResidentData template)
+        {
+            if (!HasFreeBed())
+            {
+                GameEvents.Notify("Brak wolnych lozek w kwaterach");
+                return null;
+            }
+
+            return SpawnFromTemplate(template);
         }
 
         public ResidentController Spawn(ResidentData data, Vector3 position, Transform parent = null)
@@ -158,11 +205,11 @@ namespace Schron.Residents
         }
 
         // Next free slot in the row of residents without a room (reads data only).
-        private Vector3 GetNextIdlePosition()
+        private Vector3 GetNextIdlePosition(ResidentData exclude = null)
         {
             int unassigned = 0;
             foreach (ResidentData r in _residents)
-                if (r.assignedRoomGridPos == NoRoom)
+                if (r != exclude && r.assignedRoomGridPos == NoRoom)
                     unassigned++;
 
             return idleAreaStart + new Vector3(unassigned * idleSpacing, 0f, 0f);
