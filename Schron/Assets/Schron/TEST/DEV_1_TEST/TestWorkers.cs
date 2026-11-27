@@ -62,4 +62,23 @@ public class TestWorkers : MonoBehaviour
         Debug.Log($"Kwatery: przypisanie {(ok ? "udane" : "nieudane")}, stan {resident.currentState}, osob {quarters.Workers.Count}/{quarters.Capacity}");
     }
 
+    private ResidentData testPatient;
+
+    [ContextMenu("Wyslij rannego do lecznicy")]
+    private void SendPatient()
+    {
+        var infirmary = Room.AllRooms.Find(r => r.Data.roomType == RoomType.Infirmary);
+        if (infirmary == null) { Debug.Log("Najpierw zbuduj lecznice (7)"); return; }
+
+        testPatient = new ResidentData { id = "patient", residentName = "Ranny Janek", health = 30 };
+        bool ok = infirmary.TryAssign(testPatient);
+        Debug.Log($"Lecznica: przyjecie {(ok ? "udane" : "nieudane")}, stan {testPatient.currentState}, zdrowie {testPatient.health}");
+    }
+
+    [ContextMenu("Pokaz pacjenta")]
+    private void ShowPatient()
+    {
+        if (testPatient == null) return;
+        Debug.Log($"{testPatient.residentName}: zdrowie {testPatient.health}, stan {testPatient.currentState}");
+    }
 }

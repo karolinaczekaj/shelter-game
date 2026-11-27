@@ -179,6 +179,7 @@ namespace Schron.Building
                 case RoomType.Generator:  return new Color(0.95f, 0.8f, 0.2f);
                 case RoomType.Mine:       return new Color(0.55f, 0.4f, 0.3f);
                 case RoomType.Workshop:   return new Color(0.9f, 0.5f, 0.2f);
+                case RoomType.Infirmary:  return new Color(0.95f, 0.6f, 0.65f);
                 default:                  return Color.white;
             }
         }

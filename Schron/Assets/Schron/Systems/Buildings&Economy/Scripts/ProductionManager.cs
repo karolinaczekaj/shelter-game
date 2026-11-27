@@ -1,5 +1,6 @@
 using UnityEngine;
 using Schron.Core;
+using System.Collections.Generic;
 
 namespace Schron.Building
 {
@@ -8,6 +9,9 @@ namespace Schron.Building
         [Header("Mine")]
         [SerializeField] private float mineScrapChance = 0.3f;
         [SerializeField] private int mineScrapPerWorker = 1;
+
+        [Header("Infirmary")]
+        [SerializeField] private int healPerDay = 20;
 
         [Header("Debug")]
         [SerializeField] private bool logSummary = true;
@@ -52,6 +56,10 @@ namespace Schron.Building
 
                 if (room.Data.roomType == RoomType.Mine)
                     MineScrapBonus(room);
+
+                    
+                if (room.Data.roomType == RoomType.Infirmary)
+                    Heal(room);
             }
 
             if (logSummary)
@@ -89,6 +97,24 @@ namespace Schron.Building
             {
                 if (Random.value < mineScrapChance)
                     ResourceManager.Instance.Add(ResourceType.Scrap, mineScrapPerWorker);
+            }
+        }
+
+        // lecznica leczy wszystkich w srodku, kazdy poziom wyzej = +50%
+        private void Heal(Room room)
+        {
+            int amount = Mathf.RoundToInt(healPerDay * (1f + 0.5f * (room.Level - 1)));
+
+            // kopia listy, bo wypisanie zdrowych ja zmienia
+            foreach (var patient in new List<ResidentData>(room.Workers))
+            {
+                patient.health = Mathf.Min(100, patient.health + amount);
+
+                if (patient.health >= 100)
+                {
+                    room.Remove(patient);
+                    GameEvents.Notify(patient.residentName + " wyzdrowial");
+                }
             }
         }
 

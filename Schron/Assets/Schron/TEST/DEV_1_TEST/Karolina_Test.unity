@@ -378,6 +378,7 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 80726dc3540a57747a8f69703e5e4a43, type: 2}
   - {fileID: 11400000, guid: 6e8fdc7a5def3f74a94dbc92ed9b98bc, type: 2}
   - {fileID: 11400000, guid: 561e0a500e8fea34eb1f1e32f0470307, type: 2}
+  - {fileID: 11400000, guid: 3d341ca2ae7bea84886098500c9bc082, type: 2}
   startingRooms:
   - data: {fileID: 11400000, guid: 80726dc3540a57747a8f69703e5e4a43, type: 2}
     cell: {x: 1, y: 0}
@@ -428,6 +429,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Schron.Building.ProductionManager
   mineScrapChance: 0.3
   mineScrapPerWorker: 1
+  healPerDay: 20
   logSummary: 1
 --- !u!1660057539 &9223372036854775807
 SceneRoots:

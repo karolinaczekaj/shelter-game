@@ -35,6 +35,7 @@ Gracz robi w danym dniu, co chce, i klika „Następny dzień”. Wtedy po kolei
 1. `ShelterActions.DayEnded(dzień)`, czyli rozliczenie mijającego dnia:
    - pokoje z prądem produkują zasoby (warsztat najpierw zużywa złom i rudę),
    - pokoje zużywają energię,
+   - lecznica leczy pacjentów,
    - mieszkańcy jedzą i piją, a przy braku jedzenia lub wody tracą zdrowie,
    - przeliczane jest morale schronu.
 2. Licznik dni rośnie o jeden.
@@ -54,7 +55,7 @@ Jedzenie, woda, energia, złom, ruda, komponenty i morale. Pieniędzy w grze nie
 
 **Morale schronu** to średnia morale wszystkich mieszkańców. Liczy się samo i pokazuje na pasku zasobów, nikt go ręcznie nie dodaje ani nie odejmuje. Zmieniamy morale konkretnych mieszkańców.
 
-**Brak energii:** pokoje bez prądu przestają produkować.
+**Brak energii:** pokoje bez prądu przestają produkować, a lecznica przestaje leczyć.
 
 ## Start gry
 
@@ -68,27 +69,27 @@ Liczby są do przetestowania i zmiany przy balansowaniu.
 
 ## Pomieszczenia
 
-| Pokój | Co robi | Statystyka |
-|---|---|---|
-| Kwatery | mieszkańcy śpią, zwiększa limit ludzi, odpoczynek poprawia morale | – |
-| Farma | jedzenie | zręczność |
-| Uzdatnianie wody | woda | inteligencja |
-| Generator | energia | siła |
-| Kopalnia | ruda, czasem złom | siła |
-| Warsztat | złom + ruda → komponenty | inteligencja |
-| Lecznica | leczy rannych i chorych | inteligencja |
+| Pokój | Co robi | Stan mieszkańca w środku | Statystyka |
+|---|---|---|---|
+| Kwatery | wyznaczają limit ludzi w schronie, odpoczynek poprawia morale | `Rest` | – |
+| Farma | jedzenie | `Working` | zręczność |
+| Uzdatnianie wody | woda | `Working` | inteligencja |
+| Generator | energia | `Working` | siła |
+| Kopalnia | ruda, czasem złom | `Working` | siła |
+| Warsztat | złom + ruda → komponenty | `Working` | inteligencja |
+| Lecznica | leczy rannych i chorych | `Recovery` | – |
 
-Najpierw robimy pierwsze sześć, bo bez nich gra się nie kręci. Lecznica jest następna. Jeśli zostanie czas: magazyn, ochrona i radiostacja (kontakt i handel z innymi schronami).
+Wszystkie siedem jest już zrobione. Jeśli zostanie czas: magazyn, ochrona i radiostacja (kontakt i handel z innymi schronami).
 
 ## Mieszkańcy
 
 Statystyki: siła, inteligencja, zręczność (1–10). Każdy pokój ma swoją statystykę, która zwiększa jego produkcję.
 
-**Przydział do pokoju zmieniamy tylko przez `room.TryAssign()` i `room.Remove()`.** Te metody aktualizują jednocześnie listę pracowników w pokoju i pozycję pokoju zapisaną w mieszkańcu, żeby nic się nie rozjechało. Mieszkaniec może być naraz tylko w jednym pokoju.
+**Przydział do pokoju zmieniamy tylko przez `room.TryAssign()` i `room.Remove()`.** Te metody aktualizują jednocześnie listę osób w pokoju i pozycję pokoju zapisaną w mieszkańcu, żeby nic się nie rozjechało. Mieszkaniec może być naraz tylko w jednym pokoju.
 
-`Stan ustawia sam pokój:` TryAssign w kwaterach daje Rest, w lecznicy Recovery, a w pozostałych pokojach Working. Remove zawsze ustawia Idle. Do kwater i lecznicy przypisujemy tak samo przez TryAssign.
+**Stan ustawia sam pokój:** `TryAssign` w kwaterach daje `Rest`, w lecznicy `Recovery`, a w pozostałych pokojach `Working`. `Remove` zawsze ustawia `Idle`. Do kwater i lecznicy przypisujemy tak samo przez `TryAssign`.
 
-Lista room.Workers w kwaterach i lecznicy oznacza osoby w środku, a nie pracowników. Nazwa została, żeby nie psuć kodu.
+Lista `room.Workers` w kwaterach i lecznicy oznacza osoby w środku, a nie pracowników. Nazwa została, żeby nie psuć kodu.
 
 ## Siatka i grafika
 
@@ -107,8 +108,8 @@ Wszystko jest w namespace `Schron.Core`, więc w swoich skryptach dopisujecie na
 |---|---|
 | `Enum.cs` | listy wartości: zasoby (`ResourceType`), typy pokoi (`RoomType`), statystyki (`StatType`), stany mieszkańca (`ResidentState`) |
 | `RoomDataSO.cs` | dane typu pokoju (koszt, produkcja, liczba miejsc, wymagana statystyka). Pliki tworzymy w Unity przez Create → Schron → Room Data i trzymamy w `Data/Rooms` |
-| `Room.cs` | konkretny pokój postawiony w schronie. Metody: `TryAssign(resident)`, `Remove(resident)`, `TryUpgrade()` |
-| `ResidentData.cs` | dane mieszkańca: imię, zdrowie, morale, statystyki, stan, pozycja przydzielonego pokoju. Metoda `GetStat(StatType)` |
+| `Room.cs` | konkretny pokój postawiony w schronie. Metody: `TryAssign(resident)`, `Remove(resident)`, `TryUpgrade()`. Pole `Capacity`: ile osób mieści pokój |
+| `ResidentData.cs` | dane mieszkańca: imię, zdrowie, morale, statystyki, stan, pozycja przydzielonego pokoju. Metody `GetStat(StatType)` i `Clone()` |
 | `ShelterActions.cs` | eventy symulacji: dni, zasoby, budowa i ulepszanie pokoi, przydział i stan mieszkańców |
 | `GameEvents.cs` | eventy fabularne: wyprawy, katastrofa, koniec gry, komunikaty dla gracza (`Notify`) |
 
@@ -145,11 +146,11 @@ Przykład: `ResourceManager.Instance.Add(ResourceType.Food, -2);`
 - `CurrentDay`: numer dnia
 - `IsDisasterPhase`: czy trwa już katastrofa
 
-Do testów bez UI: w Play kliknij prawym na komponencie `DayManager` w Inspectorze -> **Next Day**.
+Do testów bez UI: w Play kliknij prawym na komponencie `DayManager` w Inspectorze → **Next Day**.
 
 ## Siatka i budowanie (Systems/Buildings&Economy)
 
-Obiekt `Shelter` w scenie ma `ShelterGrid` i `BuildManager`.
+Obiekt `Shelter` w scenie ma `ShelterGrid`, `BuildManager` i `ProductionManager`.
 
 **ShelterGrid**: siatka schronu, pole (0,0) to lewy górny róg, y rośnie w dół.
 - `CanPlace(pole, rozmiar)`: czy pokój się zmieści
@@ -160,13 +161,12 @@ Obiekt `Shelter` w scenie ma `ShelterGrid` i `BuildManager`.
 **BuildManager**:
 - `SelectRoom(danePokoju)`: wybiera pokój do budowy, pod przyciski w menu budowania; `SelectRoom(null)` anuluje
 - `TryBuild(danePokoju, pole)`: buduje, jeśli jest miejsce i zasoby
-- pokoje startowe ustawia się w Inspectorze w `Starting Rooms`
+- pokoje do budowania ustawia się w Inspectorze w `Buildable Rooms`, a startowe w `Starting Rooms`
 - po wybraniu pokoju pod kursorem widać jego zarys: zielony, gdy można budować, czerwony, gdy nie ma miejsca albo zasobów; kliknięcia nad UI nie budują
 
-Na razie do testów pokój wybiera się klawiszami 1–6, a Esc albo prawy przycisk myszy anuluje.
+Na razie do testów pokój wybiera się klawiszami 1–7 (w kolejności z `Buildable Rooms`), a Esc albo prawy przycisk myszy anuluje.
 
-
-**ProductionManager** (na obiekcie `Shelter`): rozlicza produkcję na koniec każdego dnia.
+**ProductionManager**: rozlicza produkcję na koniec każdego dnia.
 - najpierw produkują generatory, potem każdy pokój płaci za prąd; bez prądu nie produkuje
 - warsztat zużywa złom i rudę (`inputPerDay`), bez materiałów nie robi komponentów
 - produkcja pracownika = `baseProductionPerWorker × (0.5 + statystyka / 10)`, czyli stat 1 daje ×0.6, stat 5 ×1.0, stat 10 ×1.5
@@ -174,11 +174,17 @@ Na razie do testów pokój wybiera się klawiszami 1–6, a Esc albo prawy przyc
 - kopalnia ma 30% szans na 1 złom od każdego pracownika dziennie
 - po każdym dniu w Console jest podsumowanie zasobów
 
+**Lecznica** (liczona w `ProductionManager`): leczy na koniec dnia wszystkich w środku (stan `Recovery`).
+- +20 zdrowia dziennie, każdy poziom lecznicy +50% (ustawiane w `ProductionManager` → `Heal Per Day`)
+- bez prądu nie leczy
+- 3 łóżka (`maxWorkers`)
+- przy 100 zdrowia pacjent sam jest wypisywany (`Remove`, stan `Idle`) i pojawia się komunikat
+- rannego wysyłamy tak: `lecznica.TryAssign(mieszkaniec)`
 
 **ShelterCapacity** (`Schron.Building`, bez obiektu w scenie): ile osób może mieszkać w schronie.
 - `ShelterCapacity.GetTotalBeds()`: łączna liczba miejsc we wszystkich kwaterach
 - `ShelterCapacity.HasFreeBed(liczbaMieszkańców)`: czy zmieści się jeszcze ktoś, do sprawdzenia przed przyjęciem nowej osoby
-- kwatery mają 4 miejsca, każdy kolejny poziom dodaje 2 (poziom 2 to 6, poziom 3 to 8)
+- kwatery mają 4 miejsca, każdy kolejny poziom dodaje 2 (poziom 2 to 6, poziom 3 to 8); liczone tym samym wzorem co `room.Capacity`
 
 W swoim skrypcie trzeba dopisać `using Schron.Building;`.
 
