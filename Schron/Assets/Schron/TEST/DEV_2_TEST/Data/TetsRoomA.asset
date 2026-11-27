@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Schron.Core.RoomDataSO
   roomId: 
   roomName: 
-  roomType: 0
+  roomType: 1
   roomIcon: {fileID: 0}
   roomPrefab: {fileID: 0}
   size: {x: 1, y: 1}

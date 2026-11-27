@@ -40,7 +40,7 @@ MonoBehaviour:
       currentState: 0
       assignedRoomGridPos: {x: -1, y: -1}
     assignToRoom: 1
-    roomGridPos: {x: 0, y: 0}
+    roomGridPos: {x: 1, y: 0}
   - data:
       id: res_03
       residentName: David
@@ -54,7 +54,7 @@ MonoBehaviour:
       currentState: 0
       assignedRoomGridPos: {x: -1, y: -1}
     assignToRoom: 1
-    roomGridPos: {x: 1, y: 0}
+    roomGridPos: {x: 2, y: 0}
   - data:
       id: res_04
       residentName: Elena
@@ -66,20 +66,6 @@ MonoBehaviour:
       intelligence: 0
       agility: 0
       currentState: 0
-      assignedRoomGridPos: {x: -1, y: 1}
-    assignToRoom: 1
-    roomGridPos: {x: 1, y: 0}
-  - data:
-      id: res_05
-      residentName: Meg
-      residentIcon: {fileID: 0}
-      residentPrefab: {fileID: 6590839446556765975, guid: 0d15c0a1676da3b47a26709e7f6bd4c3, type: 3}
-      health: 100
-      morale: 50
-      strength: 0
-      intelligence: 0
-      agility: 0
-      currentState: 0
       assignedRoomGridPos: {x: -1, y: -1}
-    assignToRoom: 1
+    assignToRoom: 0
     roomGridPos: {x: 0, y: 0}

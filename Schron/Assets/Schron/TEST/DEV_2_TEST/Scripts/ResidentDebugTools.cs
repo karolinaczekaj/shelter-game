@@ -2,6 +2,7 @@
 using Schron.Residents;
 using System.Collections.Generic;
 using UnityEngine;
+using Schron.Building;
 
 namespace Schron.Core
 {
@@ -87,6 +88,17 @@ namespace Schron.Core
             room.Remove(data);
         }
 
+        // Independent copy of the rule, so the test can catch a regression in Room.
+        private static ResidentState ExpectedState(Room room)
+        {
+            switch (room.Data.roomType)
+            {
+                case RoomType.Quarters:  return ResidentState.Rest;
+                case RoomType.Infirmary: return ResidentState.Recovery;
+                default:                 return ResidentState.Working;
+            }
+        }
+        
         // Sprawdza zgodność dyrektywy: lista pracowników w pokojach <-> pozycja zapisana w mieszkańcu.
         [ContextMenu("Check consistency")]
         private void CheckConsistency()
@@ -111,8 +123,14 @@ namespace Schron.Core
                     Room room = Room.GetRoomAt(r.assignedRoomGridPos);
                     if (room == null || !room.Workers.Contains(r))
                     {
-                        Debug.LogError($"'{r.residentName}' ma pokój {r.assignedRoomGridPos}, ale nie ma go na liście pracowników.");
+                        // ... existing error stays as it is ...
                         ok = false;
+                    }
+                    else if (r.currentState != ExpectedState(room))
+                    {
+                        Debug.LogError($"'{r.residentName}' is in room {room.GridPosition} ({room.Data.roomType}) " +
+                                    $"but has state {r.currentState}, expected {ExpectedState(room)}.");
+                            ok = false;
                     }
                 }
             }
@@ -131,6 +149,22 @@ namespace Schron.Core
 
             if (ok)
                 Debug.Log("Spójność OK.");
+        }
+
+        [SerializeField] private ResidentData recruitTemplate; // unique id, prefab, assignedRoomGridPos (-1,-1)
+
+        [ContextMenu("Log beds")]
+        private void LogBeds()
+        {
+            int count = ResidentManager.Instance.AllResidents.Count;
+            Debug.Log($"Beds: {ShelterCapacity.GetTotalBeds()}, residents: {count}, free bed: {ShelterCapacity.HasFreeBed(count)}");
+        }
+
+        [ContextMenu("Try recruit")]
+        private void TryRecruit()
+        {
+            ResidentController c = ResidentManager.Instance.TryAddResident(recruitTemplate);
+            Debug.Log(c != null ? $"Recruited {c.Data.residentName}" : "Recruit refused");
         }
     }
 }
