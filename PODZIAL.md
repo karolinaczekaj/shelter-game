@@ -84,7 +84,11 @@ Najpierw robimy pierwsze sześć, bo bez nich gra się nie kręci. Lecznica jest
 
 Statystyki: siła, inteligencja, zręczność (1–10). Każdy pokój ma swoją statystykę, która zwiększa jego produkcję.
 
-**Przydział do pokoju zmieniamy tylko przez `room.TryAssign()` i `room.Remove()`.** Te metody aktualizują jednocześnie listę pracowników w pokoju i pozycję pokoju zapisaną w mieszkańcu, żeby nic się nie rozjechało.
+**Przydział do pokoju zmieniamy tylko przez `room.TryAssign()` i `room.Remove()`.** Te metody aktualizują jednocześnie listę pracowników w pokoju i pozycję pokoju zapisaną w mieszkańcu, żeby nic się nie rozjechało. Mieszkaniec może być naraz tylko w jednym pokoju.
+
+`Stan ustawia sam pokój:` TryAssign w kwaterach daje Rest, w lecznicy Recovery, a w pozostałych pokojach Working. Remove zawsze ustawia Idle. Do kwater i lecznicy przypisujemy tak samo przez TryAssign.
+
+Lista room.Workers w kwaterach i lecznicy oznacza osoby w środku, a nie pracowników. Nazwa została, żeby nie psuć kodu.
 
 ## Siatka i grafika
 
@@ -141,7 +145,7 @@ Przykład: `ResourceManager.Instance.Add(ResourceType.Food, -2);`
 - `CurrentDay`: numer dnia
 - `IsDisasterPhase`: czy trwa już katastrofa
 
-Do testów bez UI: w Play kliknij prawym na komponencie `DayManager` w Inspectorze → **Next Day**.
+Do testów bez UI: w Play kliknij prawym na komponencie `DayManager` w Inspectorze -> **Next Day**.
 
 ## Siatka i budowanie (Systems/Buildings&Economy)
 

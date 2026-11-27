@@ -8,8 +8,7 @@ namespace Schron.Building
         // pojemnosc jednych kwater: poziom 1 = maxWorkers, kazdy kolejny +50%
         public static int GetRoomBeds(Room room)
         {
-            int baseBeds = room.Data.maxWorkers;
-            return baseBeds + (room.Level - 1) * (baseBeds / 2);
+            return room.Capacity;
         }
 
         // laczna liczba miejsc we wszystkich kwaterach

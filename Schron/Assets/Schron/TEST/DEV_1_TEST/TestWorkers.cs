@@ -51,4 +51,15 @@ public class TestWorkers : MonoBehaviour
         Debug.Log("Miejsca w kwaterach: " + ShelterCapacity.GetTotalBeds());
     }
 
+    [ContextMenu("Wpisz testowego do kwater")]
+    private void AssignToQuarters()
+    {
+        var quarters = Room.AllRooms.Find(r => r.Data.roomType == RoomType.Quarters);
+        if (quarters == null) return;
+
+        var resident = new ResidentData { id = "sleeper", residentName = "Spioch" };
+        bool ok = quarters.TryAssign(resident);
+        Debug.Log($"Kwatery: przypisanie {(ok ? "udane" : "nieudane")}, stan {resident.currentState}, osob {quarters.Workers.Count}/{quarters.Capacity}");
+    }
+
 }
